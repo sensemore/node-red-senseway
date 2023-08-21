@@ -1,0 +1,129 @@
+<script type="text/javascript">
+    RED.nodes.registerType('senseway', {
+        category: 'Sensemore',
+        color: '#F05F22',
+        defaults: {
+            name: {
+                value: ""
+            },
+            deviceMac: {
+                value: "", required: true, validate: RED.validators.regex(/^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/),
+            },
+            gatewayMac: {
+                value: "", required: true, validate: RED.validators.regex(/^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/)
+            },
+            mqttUri: {
+                value: "mqtt://localhost:1883",
+                required: true,
+                validate: RED.validators.regex(/^(mqtt:\/\/)?([^:]+)(:([0-9]+))?$/),
+            },
+            mqttUsername: {
+                value: ""
+            },
+            mqttPassword: {
+                value: ""
+            },
+            accelerometerRangeIndex: {
+                value: 0, required: true, validate: RED.validators.number()
+            },
+            samplingRateIndex: {
+                value: 0, required: true, validate: RED.validators.number()
+            },
+            sampleSize: {
+                value: 0, required: true, validate: RED.validators.number()
+            },
+            intervalSeconds: {
+                value: 30, required: true, validate: RED.validators.number()
+            },
+        },
+        outputs: 1,
+        icon: "icons/senseway.png",
+        labelStyle: function () {
+            return "text-white";
+        },
+        label: function () {
+            return this.name || "senseway";
+        },
+        oneditprepare: function () {
+            var tabs = RED.tabs.create({
+                id: "senseway-tabs",
+                onchange: function(tab) {
+                    $("#senseway-tabs-content").children().hide();
+                    $("#" + tab.id).show();
+                }
+            });
+            tabs.addTab({
+                id: "senseway-tab-device",
+                label: "Device"
+            });
+            tabs.addTab({
+                id: "senseway-tab-mqtt",
+                label: "MQTT"
+            });
+            setTimeout(function() { tabs.resize(); },0);
+        },
+    });
+</script>
+
+<script type="text/html" data-template-name="senseway">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="senseway">
+    </div>
+    <div class="form-row">
+        <ul style="min-width: 600px; margin-bottom: 20px;" id="senseway-tabs"></ul>
+    </div>
+    <div id="senseway-tabs-content" style="min-height:150px;">
+        <div id="senseway-tab-device" style="display: none;">
+            <div class="form-row">
+                <label for="node-input-deviceMac">Device</label>
+                <input type="text" id="node-input-deviceMac" placeholder="Mac Address">
+            </div>
+            <div class="form-row">
+                <label for="node-input-gatewayMac">Gateway</label>
+                <input type="text" id="node-input-gatewayMac" placeholder="Mac Address">
+            </div>
+            <hr/>
+            <div class="form-row">
+                <label for="node-input-accelerometerRangeIndex">Accelerometer Range Index</label>
+                <input type="text" id="node-input-accelerometerRangeIndex" placeholder="1">
+            </div>
+            <div class="form-row">
+                <label for="node-input-samplingRateIndex">Sampling Rate Index</label>
+                <input type="text" id="node-input-samplingRateIndex" placeholder="5">
+            </div>
+            <div class="form-row">
+                <label for="node-input-sampleSize">Sample Size</label>
+                <input type="text" id="node-input-sampleSize" placeholder="1000">
+            </div>
+            <div class="form-row">
+                <label for="node-input-intervalSeconds">Interval (Seconds)</label>
+                <input type="text" id="node-input-intervalSeconds" placeholder="30">
+            </div>
+        </div>
+        <div id="senseway-tab-mqtt" style="display: none;">
+            <div class="form-row">
+                <label for="node-input-mqttUri">MQTT URI</label>
+                <input type="text" id="node-input-mqttUri" placeholder="mqtt://localhost:1883">
+            </div>
+            <div class="form-row">
+                <label for="node-input-mqttUsername">MQTT Username</label>
+                <input type="text" id="node-input-mqttUsername" placeholder="Username">
+            </div>
+            <div class="form-row">
+                <label for="node-input-mqttPassword">MQTT Password</label>
+                <input type="text" id="node-input-mqttPassword" placeholder="Password">
+            </div>
+        </div> 
+    </div>
+</script>
+
+<script type="text/html" data-help-name="senseway">
+    <p>A Senseway node.</p>
+</script>
+
+<style>
+    .text-white {
+        fill: white;
+    }
+</style>

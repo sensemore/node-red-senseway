@@ -1,0 +1,26 @@
+{
+  "name": "@sensemore/senseway-node",
+  "version": "1.0.0",
+  "description": "\"Sensemore node-red component.\"",
+  "keywords": [
+    "node-red",
+    "sensemore",
+    "senseway"
+  ],
+  "node-red": {
+    "nodes": {
+      "senseway": "senseway.js"
+    }
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Yasir Seyrek <yasirsey@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "mqtt": "^5.0.3",
+    "node-red": "^3.0.2",
+    "uuid": "^9.0.0"
+  }
+}
