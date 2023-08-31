@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "\"Sensemore's Senseway node-red component.\"",
   "repository": {
-    "type": "git",
+    "type": "github",
     "url": "https://github.com/sensemore/node-red-senseway"
   },
   "keywords": [
@@ -12,6 +12,7 @@
     "senseway"
   ],
   "node-red": {
+    "version": ">=1.0.0",
     "nodes": {
       "senseway": "senseway.js"
     }

@@ -17,7 +17,7 @@ An example Node-RED flow is provided to help you understand how to configure the
 
 1. Open your Node-RED instance.
 2. Click on the three horizontal lines at the top right corner and select "Import."
-3. Copy the contents of [example.flow.json](example.flow.json).
+3. Copy the contents of [examples/example.flow.json](examples/example.flow.json).
 4. Paste the copied content into the import dialog and click "Import."
 
 ### 3. Configure the Senseway Device Node
