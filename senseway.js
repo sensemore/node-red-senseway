@@ -5,6 +5,7 @@ module.exports = function (RED) {
   function SensewayNode(config) {
     RED.nodes.createNode(this, config);
     const node = this;
+    const nodeContext = this.context();
 
     if (!config.gatewayMac) {
       node.error("Gateway MAC address is required");
@@ -26,10 +27,20 @@ module.exports = function (RED) {
 
     node.status({ fill: "yellow", shape: "dot", text: "connecting" });
 
-    const client = mqtt.connect(config.mqttUri, {
+    //close if already connected
+    let client = nodeContext.get("mqttClient");
+    if (client) {
+      
+      client.end();
+      node.log("MQTT disconnected");
+    }
+
+    client = mqtt.connect(config.mqttUri, {
       username: config.mqttUsername,
       password: config.mqttPassword,
     });
+    nodeContext.set("mqttClient", client);
+    node.log("MQTT connecting with URI: " + config.mqttUri + " username: " + config.mqttUsername);
 
     client.on("connect", function () {
       node.status({ fill: "green", shape: "dot", text: "connected" });
@@ -54,10 +65,10 @@ module.exports = function (RED) {
       node.log("MQTT subscribed");
 
       const intervalSeconds = config.intervalSeconds;
-      
+
       if (
-        config.accelerometerRangeIndex != 0 &&
-        config.samplingRateIndex != 0 &&
+        config.accelerometerRange != 0 &&
+        config.samplingRate != 0 &&
         config.sampleSize != 0 &&
         config.intervalSeconds != 0
       ) {
@@ -66,20 +77,20 @@ module.exports = function (RED) {
 
           client.publish(
             `prod/gateway/${config.gatewayMac}/device/${config.deviceMac}/measure/${measureId}`,
-            `${config.accelerometerRangeIndex},
-              ${config.samplingRateIndex},
+            `${config.accelerometerRange},
+              ${config.samplingRate},
                 ${config.sampleSize}`
           );
           client.publish(
             `lake/gateway/${config.gatewayMac}/device/${config.deviceMac}/measure/${measureId}`,
-            `${config.accelerometerRangeIndex},
-              ${config.samplingRateIndex},
+            `${config.accelerometerRange},
+              ${config.samplingRate},
                 ${config.sampleSize}`
           );
           node.log(`MQTT message published: ${measureId}`);
         }, config.intervalSeconds * 1000);
 
-        if(intervalSeconds != config.intervalSeconds) {
+        if (intervalSeconds != config.intervalSeconds) {
           clearInterval(publishMeasurementMessage);
         }
       }
@@ -109,7 +120,17 @@ module.exports = function (RED) {
       node.status({ fill: "red", shape: "dot", text: "offline" });
       node.error("MQTT connection offline");
     });
+
+    this.on("close", function (done) {
+      client.end();
+      node.log("MQTT disconnected");
+      done();
+    });
+
+
   }
 
   RED.nodes.registerType("senseway", SensewayNode);
+
+
 };

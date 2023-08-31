@@ -1,0 +1,106 @@
+[
+    {
+        "id": "05faae7c7788369c",
+        "type": "senseway",
+        "z": "1aa6bb45c240956a",
+        "name": "Senseway2",
+        "deviceMac": "CA:B8:40:00:00:00",
+        "gatewayMac": "CA:B8:50:00:00:00",
+        "mqttUri": "mqtt://172.25.0.1:1883",
+        "mqttUsername": "mqtt",
+        "mqttPassword": "mqtt",
+        "accelerometerRange": 1,
+        "samplingRate": 5,
+        "sampleSize": 0,
+        "intervalSeconds": 30,
+        "x": 170,
+        "y": 840,
+        "wires": [
+            [
+                "d76966592c57446b"
+            ]
+        ]
+    },
+    {
+        "id": "3854be2341c40a57",
+        "type": "file",
+        "z": "1aa6bb45c240956a",
+        "name": "write to file",
+        "filename": "telemetries",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 550,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d76966592c57446b",
+        "type": "json",
+        "z": "1aa6bb45c240956a",
+        "name": "parseJson",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 350,
+        "y": 840,
+        "wires": [
+            [
+                "d821c501bc0d333b",
+                "3854be2341c40a57"
+            ]
+        ]
+    },
+    {
+        "id": "d821c501bc0d333b",
+        "type": "function",
+        "z": "1aa6bb45c240956a",
+        "name": "Check Thresholds And Diff",
+        "func": "\nmsg.token=\"Your TELEGRAM TOKEN\"\nmsg.chatid=\"Telegram Chat id\"\n\nlet value = msg.payload.find(x=>x.NAME == \"GRMS\");\n\nif(!value){\n    return null;\n}\n\nvar [GRMSX, GRMSY, GRMSZ]= value.VALUE;\nvar avg = (GRMSX + GRMSY + GRMSZ) / 3;\nconsole.log(\"avg\",avg);\n// Store the old telemetry value in context\nif (!context.get(\"lastThreshold\")) {\n    context.set(\"lastThreshold\",avg);\n    return null;\n}\n// Compare the new value with the old value\n\n\nif (avg > context.get(\"threshold\") && avg > context.get(\"lastThreshold\")) {\n    \n    context.set(\"lastThreshold\",  avg); // Update the old value\n    \n    // Construct the message text with placeholders\n    msg.telegramMessage = encodeURI(`🔴 GRMS  value exceeded threshold(${context.get(\"threshold\")} rms)! Current value: (${avg} rms)`);\n    return msg; // Send the message to the next node\n}\n\nif (avg < context.get(\"threshold\") && context.get(\"lastThreshold\") > context.get(\"threshold\")){\n    context.set(\"lastThreshold\", avg); // Update the old value\n    msg.telegramMessage = encodeURI(`🟢GRMS  values back to normal threshold(${context.get(\"threshold\")} rms)! Current value: (${avg} rms)`);\n    return msg; // Send the message to the next node\n}\nreturn null; // Don't send the message\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.set(\"threshold\", 2);\ncontext.set(\"lastThreshold\",-999);\n",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 920,
+        "wires": [
+            [
+                "07c1ce422ea17cc1"
+            ]
+        ]
+    },
+    {
+        "id": "07c1ce422ea17cc1",
+        "type": "http request",
+        "z": "1aa6bb45c240956a",
+        "name": "Send Telegram Message",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "https://api.telegram.org/bot{{token}}/sendMessage?chat_id={{chatid}}&text={{telegramMessage}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "text",
+                "valueType": "msg",
+                "valueValue": "telegramMessage"
+            }
+        ],
+        "x": 810,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    }
+]

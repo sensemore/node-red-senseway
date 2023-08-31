@@ -1,7 +1,11 @@
 {
   "name": "@sensemore/senseway-node",
-  "version": "1.0.0",
-  "description": "\"Sensemore node-red component.\"",
+  "version": "1.0.1",
+  "description": "\"Sensemore's Senseway node-red component.\"",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sensemore/node-red-senseway"
+  },
   "keywords": [
     "node-red",
     "sensemore",
@@ -14,6 +18,7 @@
   },
   "main": "index.js",
   "scripts": {
+    "package": "npm pack",
     "start": "node index.js"
   },
   "author": "Yasir Seyrek <yasirsey@gmail.com>",

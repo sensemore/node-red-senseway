@@ -23,11 +23,12 @@
             mqttPassword: {
                 value: ""
             },
-            accelerometerRangeIndex: {
-                value: 0, required: true, validate: RED.validators.number()
+            accelerometerRange:{
+                //select
+                value: 1, required: true, validate: RED.validators.number()
             },
-            samplingRateIndex: {
-                value: 0, required: true, validate: RED.validators.number()
+            samplingRate: {
+                value: 5, required: true, validate: RED.validators.number()
             },
             sampleSize: {
                 value: 0, required: true, validate: RED.validators.number()
@@ -85,12 +86,24 @@
             </div>
             <hr/>
             <div class="form-row">
-                <label for="node-input-accelerometerRangeIndex">Accelerometer Range Index</label>
-                <input type="text" id="node-input-accelerometerRangeIndex" placeholder="1">
+                <label for="node-input-accelerometerRange">Accelerometer Range Index</label>
+                <select id="node-input-accelerometerRange">
+                    <option value="1" selected> 2G</option>
+                    <option value="2"> 4G</option>
+                    <option value="3"> 8G</option>
+                    <option value="4"> 16G</option>
+                </select>
             </div>
             <div class="form-row">
-                <label for="node-input-samplingRateIndex">Sampling Rate Index</label>
-                <input type="text" id="node-input-samplingRateIndex" placeholder="5">
+                <label for="node-input-samplingRate">Sampling Rate Index</label>
+                <select id="node-input-samplingRate">
+                    <option value="5">800 Hz</option>
+                    <option value="6">1600 Hz</option>
+                    <option value="7">3200 Hz</option>
+                    <option value="8">6400 Hz</option>
+                    <option value="9">12800 Hz</option>
+                    <option value="10">25600 Hz</option>
+                </select>
             </div>
             <div class="form-row">
                 <label for="node-input-sampleSize">Sample Size</label>
@@ -112,7 +125,7 @@
             </div>
             <div class="form-row">
                 <label for="node-input-mqttPassword">MQTT Password</label>
-                <input type="text" id="node-input-mqttPassword" placeholder="Password">
+                <input type="password" id="node-input-mqttPassword" placeholder="Password">
             </div>
         </div> 
     </div>
