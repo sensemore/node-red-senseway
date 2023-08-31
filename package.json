@@ -1,6 +1,6 @@
 {
   "name": "@sensemore/senseway-node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "\"Sensemore's Senseway node-red component.\"",
   "repository": {
     "type": "github",

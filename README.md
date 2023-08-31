@@ -64,4 +64,4 @@ By using the Senseway Node-RED component, you can create a robust industrial mon
 
 ## Support
 
-For any questions or assistance, please contact [Your Name](mailto:your@email.com).
+For any questions or assistance, please contact [Hello Sensemore](mailto:hello@sensemore.io) or to website [Sensemore](https://sensemore.io/).
